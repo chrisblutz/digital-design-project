@@ -15,12 +15,12 @@ module vga(clk, strobe, rst, hsync, vsync, blank, active, xpos, ypos);
   //  TIMINGS (640x480)
   // ===================
 
+  // Horizontal active region end
+  parameter H_END = 10'd640;
   // Horizontal sync start
-  parameter HSYNC_START = 10'd16;
+  parameter HSYNC_START = H_END + 10'd16;
   // Horizontal sync end
   parameter HSYNC_END = HSYNC_START + 10'd96;
-  // Horizontal active region start
-  parameter H_START = HSYNC_END + 10'd48;
 
   // Vertical active region end
   parameter V_END = 10'd480;
@@ -49,12 +49,12 @@ module vga(clk, strobe, rst, hsync, vsync, blank, active, xpos, ypos);
   assign vsync = ~((vpos >= VSYNC_START) & (vpos < VSYNC_END));
 
   // X/Y position signals (bounded within 0-639 for X and 0-479 for Y)
-  assign xpos = (hpos < H_START) ? 10'd0 : (hpos - H_START);
+  assign xpos = (hpos >= H_END) ? (H_END - 10'd1) : hpos;
   assign ypos = (vpos >= V_END) ? (V_END - 10'd1) : vpos;
 
   // Blanking/active signals
-  assign blank = ((hpos < H_START) | (vpos >= V_END));
-  assign active = ~blank;
+  assign blank = ~(hpos >= H_END | vpos >= V_END);
+  assign active = hsync & vsync;
 
   // ====================
   //  SEQUENTIAL LOOPING

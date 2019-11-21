@@ -1,8 +1,9 @@
 // This module implements a VGA controller and graphics rendering logic
-module graphics(clk, rst, p1_x, p1_y, p1_state, p2_x, p2_y, p2_state, vga_state, vga_colors);
+module graphics(clk, rst, p1_x, p1_y, p1_state, p2_x, p2_y, p2_state, vga_clock, vga_state, vga_colors);
   input clk, rst;
   input [9:0] p1_x, p1_y, p2_x, p2_y;
   input [3:0] p1_state, p2_state;
+  output vga_clock;
   output [3:0] vga_state;
   output reg [23:0] vga_colors;
 
@@ -60,38 +61,21 @@ module graphics(clk, rst, p1_x, p1_y, p1_state, p2_x, p2_y, p2_state, vga_state,
   always @ (*)
     if (p1_state == STATE_STANDING && xpos >= p1_x && xpos < (p1_x + p1_stand_width)
         && ypos >= p1_y && ypos < (p1_y + p1_stand_height) && p1_stand_a == 1'b1)
-    begin
-      vga_colors[23:16] = p1_stand_r;
-      vga_colors[15:8] = p1_stand_g;
-      vga_colors[7:0] = p1_stand_b;
-    end
+      vga_colors = {p1_stand_r, p1_stand_g, p1_stand_b};
     else if (p2_state == STATE_STANDING && xpos >= p2_x && xpos < (p2_x + p2_stand_width)
              && ypos >= p2_y && ypos < (p2_y + p2_stand_height) && p2_stand_a == 1'b1)
-    begin
-      vga_colors[23:16] = p2_stand_r;
-      vga_colors[15:8] = p2_stand_g;
-      vga_colors[7:0] = p2_stand_b;
-    end
+	    vga_colors = {p2_stand_r, p2_stand_g, p2_stand_b};
     else
-    begin
-      vga_colors[23:16] = bg_r;
-      vga_colors[15:8] = bg_g;
-      vga_colors[7:0] = bg_b;
-    end
+      vga_colors = {bg_r, bg_g, bg_b};
 
-  // Strobe logic (50MHz core clock, strobe every
-  // two cycles for 25MHz effective VGA clock)
-  always @ (*)
-    if (strobe_out == 8'd1)
-    begin
-      strobe_en = 1'b0;
-      strobe_so = 1'b1;
-      strobe = 1'b1;
-    end
-    else
-    begin
-      strobe_en = 1'b1;
-      strobe_so = 1'b0;
-      strobe = 1'b0;
-    end
+  // Strobe logic (strobe every two ticks)
+  reg [15:0] count;
+  always @ (posedge clk or negedge rst)
+	if (rst == 1'b0)
+		count <= 16'd0;
+	else
+		{strobe, count} <= count + 16'h8000;
+
+  // Tie the VGA clock signal to the strobe
+  assign vga_clock = strobe;
 endmodule
