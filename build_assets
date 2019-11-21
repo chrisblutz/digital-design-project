@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Convert image assets to Verilog modules
+util/png_to_v --rdepth=8 --gdepth=8 --bdepth=8 --xywidth=10 assets/test-1.png assets/test-2.png assets/test-3.png assets/test-4.png
