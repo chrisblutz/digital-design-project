@@ -1,4 +1,5 @@
 #!/bin/bash
 
-# Convert image assets to Verilog modules
-util/png_to_v --rdepth=8 --gdepth=8 --bdepth=8 --xywidth=10 assets/test-1.png assets/test-2.png assets/test-3.png assets/test-4.png
+# Convert image assets to memory initialization files
+util/png_to_mif --output=p1_sprites.mif --depth=2 --xywidth=8 --offset=0 assets/p1_stand.png assets/p1_stand_attack.png assets/p1_jump_attack.png
+util/png_to_mif --output=p2_sprites.mif --depth=2 --xywidth=8 --offset=0 assets/p2_stand.png assets/p2_stand_attack.png assets/p2_jump_attack.png

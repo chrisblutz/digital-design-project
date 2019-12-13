@@ -1,6 +1,7 @@
 /db/
 /incremental_db/
 /output_files/
+/greybox_tmp/
 /*.rpt
 /*.summary
 /*.done
