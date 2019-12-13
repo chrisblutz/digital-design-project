@@ -33,3 +33,9 @@ This project was successful overall, but some changes had to be made throughout 
 The completed design takes 1,350 logic elements and 2,752,512 bits of block memory when optimized in Quartus.
 
 ## Images
+
+![Game starting](https://raw.githubusercontent.com/chrisblutz/digital-design-project/master/images/game.jpg)
+
+![Player 1 attacking](https://raw.githubusercontent.com/chrisblutz/digital-design-project/master/images/game_p1_attack.jpg)
+
+![Player 2 attacking](https://raw.githubusercontent.com/chrisblutz/digital-design-project/master/images/game_p2_attack.jpg)
